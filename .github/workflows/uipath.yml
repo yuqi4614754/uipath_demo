@@ -7,6 +7,8 @@ on:
 jobs:
   compile:
     runs-on: windows-latest
+    environment: 
+      name: production
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -33,6 +35,11 @@ jobs:
             dir "${{ github.workspace }}\output"
             uipcli package deploy "${{ github.workspace }}\output\$($Name).$VERSION.nupkg" "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test
           }
-      - name: Run UiPath test
+      - name: Run UiPath Test
         run: uipcli test run "http://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test -r"${{ github.workspace }}\result\test_result.xml" -s testset1
-
+        continue-on-error: true
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2.16.1
+        if: always()
+        with:
+          files: "${{ github.workspace }}\result\test_result.xml"
