@@ -5,7 +5,7 @@ on:
       - "*"
 
 jobs:
-  Deploy UiPath Project:
+  Deploy:
     runs-on: windows-latest
     steps:
       - name: Checkout repository
@@ -33,7 +33,7 @@ jobs:
             dir "${{ github.workspace }}\output"
             uipcli package deploy "${{ github.workspace }}\output\$($Name).$VERSION.nupkg" "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test
           }
-  Run UiPath Test:
+  Test:
     runs-on: windows-latest
     steps:
       - name: Run UiPath test
