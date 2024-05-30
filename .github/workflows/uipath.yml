@@ -1,0 +1,35 @@
+name: "Deploy UiPath Package"
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  compile:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup UiPath (uipcli) command line tool
+        uses: Mikael-RnD/setup-uipath@v1
+
+      - name: Pack UiPath project
+        run: |
+          foreach($package in Get-ChildItem -Path ${{ github.workspace }} -Recurse -Filter project.json -File) {
+            $json = Get-Content "$package" | Out-String | ConvertFrom-Json
+            $foo = $json.projectVersion
+            $Name=$json.name
+            Write-Output "PATH=$($package)" >> $Env:GITHUB_OUTPUT
+            echo $foo
+            $v= [version] "$foo"
+            $newversion= "{0}.{1}.{2}.{3}" -f $v.Major, $v.Minor, ($v.Build),"${{github.run_number}}"
+            $VERSION=[string]$newversion
+            echo $VERSION
+            echo $Name
+            echo ${{ github.workspace }}\$Name.$VERSION.nupkg
+            # Build and Deploy the Package
+            uipcli package pack "$package" -o "${{ github.workspace }}\output" -v $VERSION -l en-US
+            dir "${{ github.workspace }}\output"
+            uipcli package deploy "${{  github.workspace }}\output\$($Name).$VERSION.nupkg" "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test
+          }
