@@ -31,5 +31,9 @@ jobs:
             # Build and Deploy the Package
             uipcli package pack "$package" -o "${{ github.workspace }}\output" -v $VERSION -l en-US
             dir "${{ github.workspace }}\output"
-            uipcli package deploy "${{  github.workspace }}\output\$($Name).$VERSION.nupkg" "https://cloud.uipath.com" DefaultTenant -t "PGYtvJkzlZuv6ppeLjq7bAw8yxdP6dLpKW7rxyT31YN6A" -a "superykqnlsk" -o docker_test
+            uipcli package deploy "${{ github.workspace }}\output\$($Name).$VERSION.nupkg" "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test
           }
+      - name: Run UiPath test
+        run: uipcli test run "http://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test -r"${{ github.workspace }}\result\test_result.xml" -s testset1
+		
+		
