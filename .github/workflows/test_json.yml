@@ -10,6 +10,9 @@ jobs:
     environment: 
       name: UIPATH
     steps:
+      - name: setup python
+        uses: actions/setup-python@v5.1.0
+        
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action/windows@v2
         if: always()
