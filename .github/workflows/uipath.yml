@@ -8,7 +8,7 @@ jobs:
   compile:
     runs-on: windows-latest
     environment: 
-      name: production
+      name: UIPATH
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
