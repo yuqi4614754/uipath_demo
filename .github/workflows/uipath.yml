@@ -41,9 +41,9 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}\result\
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action/windows@v2
-        if: always()
+      - name: Upload Test Result
+        uses: actions/upload-artifact@v4
         with:
-          files: |
-            "${{ github.workspace }}\result\test_result.json"
+          name: $($Name)_$VERSION_test_result
+          path: ${{ github.workspace }}\result\test_result.json
+          retention-days: 5
