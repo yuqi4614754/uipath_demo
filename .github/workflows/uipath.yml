@@ -36,10 +36,11 @@ jobs:
             uipcli package deploy "${{ github.workspace }}\output\$($Name).$VERSION.nupkg" "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test
           }
       - name: Run UiPath Test
-        run: uipcli test run "http://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test -r"${{ github.workspace }}\result\test_result.xml" -s testset1
+        run: uipcli test run "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test -r"${{ github.workspace }}\result\test_result.json" -s testset1
         continue-on-error: true
       - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2.16.1
+        uses: EnricoMi/publish-unit-test-result-action/windows@v2
         if: always()
         with:
-          files: "${{ github.workspace }}\result\test_result.xml"
+          files: |
+            "${{ github.workspace }}\result\test_result.json"
