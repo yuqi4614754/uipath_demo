@@ -38,6 +38,9 @@ jobs:
       - name: Run UiPath Test
         run: uipcli test run "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test -r"${{ github.workspace }}\result\test_result.json" -s testset1
         continue-on-error: true
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}\result\
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action/windows@v2
         if: always()
