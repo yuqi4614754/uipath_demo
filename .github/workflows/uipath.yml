@@ -38,11 +38,11 @@ jobs:
             dir "${{ github.workspace }}\output"
             $env:PACKAGE_VERSION = $VERSION
             $env:PROJECK_NAME = $Name
-            uipcli package deploy "${{ github.workspace }}\output\$($Name).$VERSION.nupkg" "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test
+            uipcli package deploy "${{ github.workspace }}\output\$($Name).$VERSION.nupkg" "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o ${{vars.FOLDER_NAME}}
           }
           
       - name: Run UiPath Test
-        run: uipcli test run "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test -r"${{ github.workspace }}\result\test_result.json" -s testset1
+        run: uipcli test run "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o $${vars.FOLDER_NAME} -r"${{ github.workspace }}\result\test_result.json" -s ${{vars.TESTSUITE_NAME}}
         continue-on-error: true
       - name: List files in the repository
         run: |
@@ -52,6 +52,6 @@ jobs:
       - name: Upload Test Result
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.PROJECK_NAME }}_${{ env.PACKAGE_VERSION }}_test_result
-          path: ${{ github.workspace }}\result\test_result.json
+          name: uipath_test_result
+          path: ${{ github.workspace }}\result\
           retention-days: 5
