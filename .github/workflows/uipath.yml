@@ -42,7 +42,7 @@ jobs:
           }
           
       - name: Run UiPath Test
-        run: uipcli test run "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o $${vars.FOLDER_NAME} -r"${{ github.workspace }}\result\test_result.json" -s ${{vars.TESTSUITE_NAME}}
+        run: uipcli test run "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o $${vars.FOLDER_NAME} -r"${{ github.workspace }}\result\test_result.json" -s ${{vars.TESTSUITE_NAME}} --attachRobotLogs "true"
         continue-on-error: true
       - name: List files in the repository
         run: |
