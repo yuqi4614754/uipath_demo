@@ -1,0 +1,19 @@
+name: "gen report"
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  compile:
+    runs-on: self-hosted
+    environment: 
+      name: UIPATH
+    steps:        
+    - uses: actions/download-artifact@v4
+      with:
+       name: uipath_test_result
+       path: ${{ github.workspace }}\result\
+
+    - name: "show result"
+      run: type ${{ github.workspace }}\result\test-summary.md
