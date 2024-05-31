@@ -6,7 +6,7 @@ on:
 
 jobs:
   compile:
-    runs-on: self-hosted
+    runs-on: windows-latest
     environment: 
       name: UIPATH
     steps:        
