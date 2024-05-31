@@ -49,12 +49,12 @@ jobs:
           ls ${{ github.workspace }}\result\
       - name: List env
         run: env
-      - name: Convert JUnit XML to HTML
-        uses: pl-strflt/junit-xml-to-html@v1
+      - name: Test Summary
+        uses: test-summary/action@v2
         with:
-          mode: 'no-frames'
-          input: ${{ github.workspace }}\result\test_result.xml
-          output: ${{ github.workspace }}\result\test_result.html
+          paths: ${{ github.workspace }}\result\test_result.xml
+          output: ${{ github.workspace }}\result\test-summary.md
+        if: always()
       - name: Upload Test Result
         uses: actions/upload-artifact@v4
         with:
