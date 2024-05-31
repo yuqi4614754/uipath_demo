@@ -42,13 +42,19 @@ jobs:
           }
           
       - name: Run UiPath Test
-        run: uipcli test run "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o $${vars.FOLDER_NAME} -r"${{ github.workspace }}\result\test_result.json" -s ${{vars.TESTSUITE_NAME}} --attachRobotLogs "true"
+        run: uipcli test run "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o ${{vars.FOLDER_NAME}} -r"${{ github.workspace }}\result\test_result.xml" -s ${{vars.TESTSUITE_NAME}} --out junit --attachRobotLogs "true"
         continue-on-error: true
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}\result\
       - name: List env
         run: env
+      - name: Convert JUnit XML to HTML
+        uses: pl-strflt/junit-xml-to-html@v1
+        with:
+          mode: 'no-frames'
+          input: ${{ github.workspace }}\result\test_result.xml
+          output: ${{ github.workspace }}\result\test_result.html
       - name: Upload Test Result
         uses: actions/upload-artifact@v4
         with:
