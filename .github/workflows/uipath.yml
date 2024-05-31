@@ -7,6 +7,9 @@ on:
 jobs:
   compile:
     runs-on: windows-latest
+    env: 
+      PROJECK_NAME: ""
+      PACKAGE_VERSION: ""
     environment: 
       name: UIPATH
     steps:
@@ -33,8 +36,11 @@ jobs:
             # Build and Deploy the Package
             uipcli package pack "$package" -o "${{ github.workspace }}\output" -v $VERSION -l en-US
             dir "${{ github.workspace }}\output"
+            $env:PACKAGE_VERSION = $VERSION
+            $env:PROJECK_NAME = $Name
             uipcli package deploy "${{ github.workspace }}\output\$($Name).$VERSION.nupkg" "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test
           }
+          
       - name: Run UiPath Test
         run: uipcli test run "https://cloud.uipath.com" DefaultTenant -t "${{secrets.UIPATH_USER_KEY}}" -a "${{secrets.UIPATH_ORGANIZATION_ID}}" -o docker_test -r"${{ github.workspace }}\result\test_result.json" -s testset1
         continue-on-error: true
@@ -44,6 +50,6 @@ jobs:
       - name: Upload Test Result
         uses: actions/upload-artifact@v4
         with:
-          name: $($Name)_$VERSION_test_result
+          name: $env:PROJECK_NAME_$env:PACKAGE_VERSION_test_result
           path: ${{ github.workspace }}\result\test_result.json
           retention-days: 5
