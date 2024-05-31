@@ -47,9 +47,11 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}\result\
+      - name: List env
+        run: env
       - name: Upload Test Result
         uses: actions/upload-artifact@v4
         with:
-          name: $env:PROJECK_NAME_$env:PACKAGE_VERSION_test_result
+          name: ${{ env.PROJECK_NAME }}_${{ env.PACKAGE_VERSION }}_test_result
           path: ${{ github.workspace }}\result\test_result.json
           retention-days: 5
